@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import de.colhapa.user.persistence.User;
 
@@ -26,5 +27,13 @@ public class UserService {
 		User user = userOptional.orElse(new User(userId));
 		
 		return user;
+	}
+	
+	public User saveUser(User user) {
+		if(StringUtils.isEmpty(user.getUserId())) {
+			throw new IllegalArgumentException("UserId has to be specified.");
+		}
+		
+		return userRepository.save(user);
 	}
 }

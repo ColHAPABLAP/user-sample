@@ -10,6 +10,7 @@ import org.springframework.test.context.TestExecutionListeners
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener
+import org.springframework.dao.DataIntegrityViolationException
 import spock.lang.Specification;
 
 @DatabaseSetup(["/users.xml"])
@@ -69,9 +70,9 @@ class UserRepositoryTest extends Specification {
 			def newUser = new User(existingUserId)
 		
 		when:
-			userRepository.save(newUser);
+			userRepository.save(newUser)
 			
 		then:
-			existingUserId == "id1";
+			thrown DataIntegrityViolationException
 	}
 }

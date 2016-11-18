@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import de.colhapa.user.UserService;
 import de.colhapa.user.persistence.User;
+import java.lang.IllegalArgumentException;
 import spock.lang.Specification
 
 class UserServiceTest extends Specification {
@@ -29,10 +30,10 @@ class UserServiceTest extends Specification {
 			
 		then:
 			1 * userService.userRepository.findOneByUserId(userId) >> Optional.of(storedUser)
-			user.getId() == 0L;
-			user.getUserId() == userId;
-			user.getFirstName() == 'Horst';
-			user.getLastName() == 'Frehmann';
+			user.id == 0L;
+			user.userId == userId;
+			user.firstName == 'Horst';
+			user.lastName == 'Frehmann';
 	}
 	
 	def "Should return a user for a given userId"() {
@@ -43,10 +44,10 @@ class UserServiceTest extends Specification {
 			
 		then:
 			1 * userService.userRepository.findOneByUserId(userId) >> Optional.of(storedUser)
-			user.getId() == 0L;
-			user.getUserId() == userId;
-			user.getFirstName() == 'Horst';
-			user.getLastName() == 'Frehmann';
+			user.id == 0L;
+			user.userId == userId;
+			user.firstName == 'Horst';
+			user.lastName == 'Frehmann';
 	}
 	
 	def "Should return a new user if requested user does not exist"() {
@@ -57,37 +58,35 @@ class UserServiceTest extends Specification {
 			
 		then:
 			1 * userService.userRepository.findOneByUserId(userId) >> Optional.ofNullable(null)
-			user.getId() == null;
-			user.getUserId() == userId;
-			user.getFirstName() == null;
-			user.getLastName() == null;
+			user.id == null;
+			user.userId == userId;
+			user.firstName == null;
+			user.lastName == null;
 	}
 
 	def "Should save an empty user with default values"() {
-		def userId = 'newUser'
+		def newUserId = "newId"
+		def newUser = new User(newUserId)
 				
 		when:
-			User user = userService.getUser(userId)
+			User savedUser = userService.saveUser(newUser)
 			
 		then:
-			1 * userService.userRepository.findOneByUserId(userId) >> Optional.ofNullable(null)
-			user.getId() == null;
-			user.getUserId() == userId;
-			user.getFirstName() == null;
-			user.getLastName() == null;
+			1 * userService.userRepository.save(newUser) >> newUser
+			savedUser.userId == newUserId
+			savedUser.firstName == ""
+			savedUser.lastName == ""
 	}
 	
 	def "Should not save a user without userId"() {
-		def newUser = new User();
+		def newUser = new User()
 				
 		when:
 			User user = userService.saveUser(newUser)
 			
 		then:
-			1 * userService.userRepository.findOneByUserId(userId) >> Optional.ofNullable(null)
-//			user.getId() == null;
-//			user.getUserId() == userId;
-//			user.getFirstName() == null;
-//			user.getLastName() == null;
+			newUser.userId == null
+			0 * userService.userRepository.save(newUser)
+			thrown IllegalArgumentException
 	}
 }
