@@ -74,8 +74,6 @@ class UserServiceTest extends Specification {
 		then:
 			1 * userService.userRepository.save(newUser) >> newUser
 			savedUser.userId == newUserId
-			savedUser.firstName == ""
-			savedUser.lastName == ""
 	}
 	
 	def "Should not save a user without userId"() {
