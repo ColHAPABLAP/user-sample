@@ -22,7 +22,7 @@ import spock.lang.Specification;
 //	TransactionalTestExecutionListener.class,
 	DbUnitTestExecutionListener.class
 ])
-class SettingsCustomerE2ETest extends Specification {
+class UserServiceE2eTest extends Specification {
 	
 	@Autowired
 	private UserService userService;
