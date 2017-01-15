@@ -1,16 +1,12 @@
-package de.colhapa.user;
+package de.colhapa.user
 
-import java.util.Optional;
-
-import de.colhapa.user.UserService;
-import de.colhapa.user.persistence.User;
-import java.lang.IllegalArgumentException;
+import de.colhapa.user.persistence.User
 import spock.lang.Specification
 
 class UserServiceTest extends Specification {
 	
-	UserService userService;
-	User storedUser;
+	UserService userService
+	User storedUser
 	
 	void setup() {
       userService = new UserService(userRepository: Mock(UserRepository))
@@ -30,10 +26,10 @@ class UserServiceTest extends Specification {
 			
 		then:
 			1 * userService.userRepository.findOneByUserId(userId) >> Optional.of(storedUser)
-			user.id == 0L;
-			user.userId == userId;
-			user.firstName == 'Horst';
-			user.lastName == 'Frehmann';
+			user.id == 0L
+			user.userId == userId
+			user.firstName == 'Horst'
+			user.lastName == 'Frehmann'
 	}
 	
 	def "Should return a user for a given userId"() {
@@ -44,10 +40,10 @@ class UserServiceTest extends Specification {
 			
 		then:
 			1 * userService.userRepository.findOneByUserId(userId) >> Optional.of(storedUser)
-			user.id == 0L;
-			user.userId == userId;
-			user.firstName == 'Horst';
-			user.lastName == 'Frehmann';
+			user.id == 0L
+			user.userId == userId
+			user.firstName == 'Horst'
+			user.lastName == 'Frehmann'
 	}
 	
 	def "Should return a new user if requested user does not exist"() {
@@ -58,10 +54,10 @@ class UserServiceTest extends Specification {
 			
 		then:
 			1 * userService.userRepository.findOneByUserId(userId) >> Optional.ofNullable(null)
-			user.id == null;
-			user.userId == userId;
-			user.firstName == null;
-			user.lastName == null;
+			user.id == null
+			user.userId == userId
+			user.firstName == null
+			user.lastName == null
 	}
 
 	def "Should save an empty user with default values"() {

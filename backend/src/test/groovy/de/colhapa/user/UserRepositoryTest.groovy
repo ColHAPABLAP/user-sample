@@ -1,4 +1,4 @@
-package de.colhapa.user;
+package de.colhapa.user
 
 import de.colhapa.user.persistence.User
 import de.colhapa.BackendApplication
@@ -8,10 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationConfiguration
 import org.springframework.test.context.TestExecutionListeners
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener
 import org.springframework.dao.DataIntegrityViolationException
-import spock.lang.Specification;
+import spock.lang.Specification
 
 @DatabaseSetup(["/users.xml"])
 @SpringApplicationConfiguration(classes = BackendApplication.class)
@@ -24,15 +22,15 @@ import spock.lang.Specification;
 class UserRepositoryTest extends Specification {
 	
 	@Autowired
-	UserRepository userRepository;
+	UserRepository userRepository
 	
 	def "Should contain users"() {
 		
 		when:
-			def numUsers = userRepository.count();
+			def numUsers = userRepository.count()
 			
 		then:
-			numUsers == 3;
+			numUsers == 3L
 	}
 	
 	def "Should find user by userId"() {
@@ -40,11 +38,11 @@ class UserRepositoryTest extends Specification {
 			def userId = "id1"
 		
 		when:
-			Optional<User> userOptional = userRepository.findOneByUserId(userId);
+			Optional<User> userOptional = userRepository.findOneByUserId(userId)
 			User user = userOptional.orElse(null)
 			
 		then:
-			user.getUserId() == userId;
+			user.getUserId() == userId
 			user.getFirstName() == "John"
 			user.getLastName() == "Doe"
 	}
@@ -54,10 +52,10 @@ class UserRepositoryTest extends Specification {
 			def firstName = "John"
 		
 		when:
-			List<User> users = userRepository.findAllByFirstName(firstName);
+			List<User> users = userRepository.findAllByFirstName(firstName)
 		
 		then:
-			users.size() == 2;
+			users.size() == 2
 //			users.
 //			user.getUserId() == userId;
 //			user.getFirstName() == "John"
