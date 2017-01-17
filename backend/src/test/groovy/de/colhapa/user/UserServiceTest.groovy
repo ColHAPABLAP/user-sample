@@ -9,8 +9,8 @@ class UserServiceTest extends Specification {
 	User storedUser
 	
 	void setup() {
-      userService = new UserService(userRepository: Mock(UserRepository))
-      storedUser = new User(
+		userService = new UserService(userRepository: Mock(UserRepository))
+		storedUser = new User(
 	      		id: 0,
 					userId: 'ColHAPA',
 					firstName: 'Horst',
