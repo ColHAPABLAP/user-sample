@@ -68,6 +68,7 @@ class UserServiceTest extends Specification {
 			User savedUser = userService.saveUser(newUser)
 			
 		then:
+			1 * userService.userRepository.findOneByUserId(newUserId) >> Optional.ofNullable(null)
 			1 * userService.userRepository.save(newUser) >> newUser
 			savedUser.userId == newUserId
 	}
@@ -82,5 +83,30 @@ class UserServiceTest extends Specification {
 			newUser.userId == null
 			0 * userService.userRepository.save(newUser)
 			thrown IllegalArgumentException
+	}
+
+	def "Should update an existing user"() {
+		def userId = "userId"
+		def existingId = 0L
+		def modifiedUser = new User(userId: userId,
+				firstName: "Jack",
+				lastName: "Bauer"
+		)
+		def existingUser = new User(id: existingId,
+				userId: userId,
+				firstName: "John",
+				lastName: "Doe"
+		)
+
+		when:
+		User savedUser = userService.saveUser(modifiedUser)
+
+		then:
+		1 * userService.userRepository.findOneByUserId(userId) >> Optional.ofNullable(existingUser)
+		1 * userService.userRepository.save(modifiedUser) >> modifiedUser
+		savedUser.id == existingId
+		savedUser.userId == userId
+		savedUser.firstName == "Jack"
+		savedUser.lastName == "Bauer"
 	}
 }

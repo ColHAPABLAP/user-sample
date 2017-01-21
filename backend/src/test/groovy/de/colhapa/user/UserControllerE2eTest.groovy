@@ -61,11 +61,49 @@ class UserControllerE2eTest extends Specification {
                 .andExpect(jsonPath('$.lastName', is(lastName)))
     }
 
-    def "Should save User and load it afterwards."() {
+    def "Should save a new User and load it afterwards."() {
         given:
         def userId = 'newUser'
         def firstName = 'Horst'
         def lastName = 'Frehmann'
+
+        when:
+        mockMvc.perform(put('/user').content(
+                """
+                    {
+                        "userId": "${userId}",
+                        "firstName": "${firstName}",
+                        "lastName": "${lastName}"
+                    }
+                """
+        ).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isAccepted())
+
+        and:
+        def response = mockMvc.perform(get('/user/' + userId).contentType(MediaType.APPLICATION_JSON_UTF8))
+
+        then:
+        response
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath('$.userId', is(userId)))
+                .andExpect(jsonPath('$.firstName', is(firstName)))
+                .andExpect(jsonPath('$.lastName', is(lastName)))
+    }
+
+    def "Should save changes to existing user"() {
+        given:
+        def userId = 'id1'
+        def firstName = 'Jack'
+        def lastName = 'Bauer'
+
+        def responseForExistingUser = mockMvc.perform(get('/user/' + userId).contentType(MediaType.APPLICATION_JSON_UTF8))
+        responseForExistingUser
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath('$.userId', is(userId)))
+                .andExpect(jsonPath('$.firstName', is("John")))
+                .andExpect(jsonPath('$.lastName', is("Doe")))
 
         when:
         mockMvc.perform(put('/user').content(

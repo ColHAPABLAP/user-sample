@@ -33,7 +33,12 @@ public class UserService {
 		if(StringUtils.isEmpty(user.getUserId())) {
 			throw new IllegalArgumentException("UserId has to be specified.");
 		}
-		
+
+		Optional<User> storedUser = userRepository.findOneByUserId(user.getUserId());
+		if (storedUser.isPresent()) {
+			user.setId(storedUser.get().getId());
+		}
+
 		return userRepository.save(user);
 	}
 }
