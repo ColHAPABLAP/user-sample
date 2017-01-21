@@ -47,4 +47,27 @@ class UserControllerTest extends Specification {
                 .andExpect(jsonPath('$.firstName', is(firstName)))
                 .andExpect(jsonPath('$.lastName', is(lastName)))
     }
+
+    def "Should save User"() {
+        given:
+        def userId = 'userId1'
+        def firstName = 'John'
+        def lastName = 'Doe'
+
+        when:
+        mockMvc.perform(put('/user').content(
+                """
+                    {
+                        "userId": "${userId}",
+                        "firstName": "${firstName}",
+                        "lastName": "${lastName}"
+                    }
+                """
+                ).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isAccepted())
+
+        then:
+        // TODO how to check the actual passed values?
+        1 * userController.userService.saveUser(_)
+    }
 }

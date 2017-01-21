@@ -50,4 +50,50 @@ class UserServiceE2eTest extends Specification {
 			user.getFirstName() == 'John'
 			user.getLastName() == 'Doe'
 	}
+
+	def "Should save new user and load it by id afterwards"() {
+		given:
+		def newUser = new User(userId: "newId",
+				firstName: "Horst",
+				lastName: "Frehmann"
+		)
+
+		when:
+		User savedUser = userService.saveUser(newUser)
+
+		then:
+		savedUser == newUser
+
+		when:
+		User loadedUser = userService.getUser(savedUser.id)
+
+		then:
+		loadedUser.id == savedUser.id
+		loadedUser.userId == savedUser.userId
+		loadedUser.firstName == savedUser.firstName
+		loadedUser.lastName == savedUser.lastName
+	}
+
+	def "Should save new user and load it by userId afterwards"() {
+		given:
+		def newUser = new User(userId: "gid",
+				firstName: "Gordon",
+				lastName: "Freeman"
+		)
+
+		when:
+		User savedUser = userService.saveUser(newUser)
+
+		then:
+		savedUser == newUser
+
+		when:
+		User loadedUser = userService.getUser("gid")
+
+		then:
+		loadedUser.id == savedUser.id
+		loadedUser.userId == savedUser.userId
+		loadedUser.firstName == savedUser.firstName
+		loadedUser.lastName == savedUser.lastName
+	}
 }

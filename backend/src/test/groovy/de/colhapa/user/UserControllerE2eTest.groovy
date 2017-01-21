@@ -15,13 +15,9 @@ import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
 
 import static org.hamcrest.CoreMatchers.is
-import static org.hamcrest.CoreMatchers.is
-import static org.hamcrest.CoreMatchers.is
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -60,6 +56,36 @@ class UserControllerE2eTest extends Specification {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath('$.id').doesNotExist())
+                .andExpect(jsonPath('$.userId', is(userId)))
+                .andExpect(jsonPath('$.firstName', is(firstName)))
+                .andExpect(jsonPath('$.lastName', is(lastName)))
+    }
+
+    def "Should save User and load it afterwards."() {
+        given:
+        def userId = 'newUser'
+        def firstName = 'Horst'
+        def lastName = 'Frehmann'
+
+        when:
+        mockMvc.perform(put('/user').content(
+                """
+                    {
+                        "userId": "${userId}",
+                        "firstName": "${firstName}",
+                        "lastName": "${lastName}"
+                    }
+                """
+        ).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isAccepted())
+
+        and:
+        def response = mockMvc.perform(get('/user/' + userId).contentType(MediaType.APPLICATION_JSON_UTF8))
+
+        then:
+        response
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath('$.userId', is(userId)))
                 .andExpect(jsonPath('$.firstName', is(firstName)))
                 .andExpect(jsonPath('$.lastName', is(lastName)))

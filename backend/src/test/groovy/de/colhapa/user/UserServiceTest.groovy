@@ -76,7 +76,7 @@ class UserServiceTest extends Specification {
 		def newUser = new User()
 				
 		when:
-			User user = userService.saveUser(newUser)
+			userService.saveUser(newUser)
 			
 		then:
 			newUser.userId == null
